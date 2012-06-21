@@ -15,8 +15,9 @@ class DentonBot(pyrc.Bot):
   @hooks.interval(15000)
   def scrape(self):
     results = self.scraper.scrape()
-    for (name, chapter) in results:
-      self.message('#testchannel', 'New %s' % name)
+    for (name, chapter, link) in results:
+      msg = 'New %s: %s' % (name, link)
+      self.message('#testchannel', msg)
   
 if __name__ == '__main__':
   bot = DentonBot('irc.synirc.net', 
