@@ -22,7 +22,7 @@ class DentonBot(pyrc.Bot):
 if __name__ == '__main__':
   bot = DentonBot('irc.synirc.net', 
     nick='JCDenton',
-    #names=['JC', 'JCDenton', 'Denton', 'JCD'],
+    names=['JC', 'JCDenton', 'Denton', 'JCD'],
     realname='JC Denton Bot',
     channels=['#testchannel'])
   bot.connect()
