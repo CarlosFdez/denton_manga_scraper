@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Todo: There should probably be some sort of "driver" system
-def mangastream_manga_list():
+def mangastream_scrape(manga_list):
   r = requests.get('http://mangastream.com')
   if r.status_code != 200:
     print 'ERROR: Failed to load mangastream'
@@ -14,7 +14,9 @@ def mangastream_manga_list():
   results = []
   for link in links:
     (name, chapter) = link.text.rsplit(' ', 1)
-    results.append( (name, int(chapter), link['href']) )
+    if name not in manga_list: continue
+    result = (name, int(chapter), link['href'])
+    results.append(result)
   return results
 
 # TODO: Support more than just mangastream
@@ -31,12 +33,12 @@ class Scraper(object):
 
   def scrape(self):
     results = []
-    for (name, chapter, link) in mangastream_manga_list():
-      if name in self.mangastream:
-        if self.is_new(name, chapter):
-          result = (name, chapter, link)
-          results.append(result)
-          self.record(result)
+    manga_info = mangastream_scrape(self.mangastream)
+    for (name, chapter, link) in manga_info:
+      if self.is_new(name, chapter):
+        result = (name, chapter, link)
+        results.append(result)
+        self.record(result)
     return results
 
   def record(self, result):
