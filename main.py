@@ -3,7 +3,7 @@ import pyrc.utils.hooks as hooks
 from scraper import Scraper
 
 # Todo: Don't use a global variable
-CHANNEL = '##'
+CHANNEL = '#testchannel'
 
 class DentonBot(pyrc.Bot):
   def __init__(self, *args, **kwargs):

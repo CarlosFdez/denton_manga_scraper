@@ -10,7 +10,12 @@ def mangastream_manga_list():
     return []
   soup = BeautifulSoup(r.text)
   links = soup.find('ul', 'freshmanga').find_all("a")
-  return map(lambda x: (x.text.strip(), x['href']), links)
+  
+  results = []
+  for link in links:
+    (name, chapter) = link.text.rsplit(' ', 1)
+    results.append( (name, int(chapter), link['href']) )
+  return results
 
 # TODO: Support more than just mangastream
 class Scraper(object):
@@ -26,9 +31,7 @@ class Scraper(object):
 
   def scrape(self):
     results = []
-    for (manga, link) in mangastream_manga_list():
-      (name, chapter) = manga.rsplit(' ', 1)
-      chapter = int(chapter)
+    for (name, chapter, link) in mangastream_manga_list():
       if name in self.mangastream:
         if self.is_new(name, chapter):
           result = (name, chapter, link)
