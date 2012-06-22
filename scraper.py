@@ -27,11 +27,10 @@ def mangahere_scrape(manga_list):
     print 'ERROR: Failed to load mangahere'
     return []
   soup = BeautifulSoup(r.text)
-  items = soup.find('div', 'manga_updates').find_all("dl")
+  links = soup.find('div', 'manga_updates').select("dd a")
 
   results = []
-  for item in items:
-    link = item.dd.a # retrieves the first link in <dd>
+  for link in links:
     (name, chapter) = link.text.rsplit(' ', 1)
     if name not in manga_list: continue
     result = (name, int(chapter), link['href'])
