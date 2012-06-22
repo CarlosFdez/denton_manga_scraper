@@ -1,9 +1,9 @@
+import os
 import pyrc
 import pyrc.utils.hooks as hooks
 from scraper import Scraper
 
-# Todo: Don't use a global variable
-CHANNEL = '#testchannel'
+CHANNELS = os.environ.get('BOT_CHANNELS', 'testchannel').split(',')
 
 class DentonBot(pyrc.Bot):
   def __init__(self, *args, **kwargs):
@@ -25,18 +25,19 @@ class DentonBot(pyrc.Bot):
     results = self.scraper.scrape()
     for (name, chapter, link) in results:
       msg = 'New %s (%i): %s' % (name, chapter, link)
-      self.message(CHANNEL, msg)
+      for channel in CHANNELS:
+        self.message(channel, msg)
 
   @hooks.command
   def fetch_manga(self, channel):
     results = self.scraper.get_manga()
     for (name, chapter, link) in results:
-      self.message(CHANNEL, "%s %i: %s" % (name, chapter, link))
+      self.message(channel, "%s %i: %s" % (name, chapter, link))
 
 if __name__ == '__main__':
   bot = DentonBot('irc.synirc.net',
     nick='JCDenton',
     names=['JC', 'JCDenton', 'Denton', 'JCD'],
     realname='JC Denton Bot',
-    channels=[CHANNEL])
+    channels=CHANNELS)
   bot.connect()
