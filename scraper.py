@@ -2,15 +2,41 @@ import redis
 import requests
 from bs4 import BeautifulSoup
 
-# Todo: There should probably be some sort of "driver" system
-def mangastream_manga_list():
+# TODO: There should probably be some sort of "driver" system
+# TODO: Don't get a request from mangastream / mangahere if no manga goes there
+
+def mangastream_scrape(manga_list):
   r = requests.get('http://mangastream.com')
   if r.status_code != 200:
     print 'ERROR: Failed to load mangastream'
     return []
   soup = BeautifulSoup(r.text)
   links = soup.find('ul', 'freshmanga').find_all("a")
-  return map(lambda x: (x.text.strip(), x['href']), links)
+
+  results = []
+  for link in links:
+    (name, chapter) = link.text.rsplit(' ', 1)
+    if name not in manga_list: continue
+    result = (name, int(chapter), link['href'])
+    results.append(result)
+  return results
+
+def mangahere_scrape(manga_list):
+  r = requests.get('http://mangahere.com')
+  if r.status_code != 200:
+    print 'ERROR: Failed to load mangahere'
+    return []
+  soup = BeautifulSoup(r.text)
+  items = soup.find('div', 'manga_updates').find_all("dl")
+
+  results = []
+  for item in items:
+    link = item.dd.a # retrieves the first link in <dd>
+    (name, chapter) = link.text.rsplit(' ', 1)
+    if name not in manga_list: continue
+    result = (name, int(chapter), link['href'])
+    results.append(result)
+  return results
 
 # TODO: Support more than just mangastream
 class Scraper(object):
@@ -18,29 +44,24 @@ class Scraper(object):
     self.db = redis.StrictRedis(host='localhost', port=6379, db=0)
     self.manga = {}
     self.mangastream = []
+    self.mangahere = []
 
   def add_manga(self, name, sources):
     self.manga[name] = sources
     if 'mangastream' in sources:
       self.mangastream.append(name)
+    if 'mangahere' in sources:
+      self.mangahere.append(name)
 
   def scrape(self):
     results = []
-
-    # Add new manga to an array.
-    for (manga, link) in mangastream_manga_list():
-      (name, chapter) = manga.rsplit(' ', 1)
-      chapter = int(chapter)
-      if name in self.mangastream:
-        if self.is_new(name, chapter):
-          result = (name, chapter, link)
-          results.append(result)
-
-    # Results are recorded afterward.
-    # This is so we consistently get batches of new chaps.
-    for result in results:
-      self.record(result)
-
+    manga_info = mangastream_scrape(self.mangastream)
+    manga_info += mangahere_scrape(self.mangahere)
+    for (name, chapter, link) in manga_info:
+      if self.is_new(name, chapter):
+        result = (name, chapter, link)
+        results.append(result)
+        self.record(result)
     return results
 
   def record(self, result):
