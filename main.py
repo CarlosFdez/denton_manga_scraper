@@ -12,6 +12,9 @@ class DentonBot(pyrc.Bot):
     self.scraper.add_manga('One Piece', ['mangastream'])
     self.scraper.add_manga('Bleach', ['mangastream'])
     self.scraper.add_manga('Naruto', ['mangastream'])
+    self.scraper.add_manga('Toriko', ['mangahere'])
+    self.scraper.add_manga('Gamaran', ['mangahere'])
+    self.scraper.add_manga('Soul Eater', ['mangahere'])
 
   @hooks.command
   def help(self, channel):
