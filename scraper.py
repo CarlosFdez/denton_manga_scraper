@@ -50,9 +50,9 @@ class Scraper(object):
       host, port, password = 'localhost', 6379, None
     else:
       url = os.environ['REDISTOGO_URL']
-      password, host, port = re.match(r'redis://redistogo:(\w+)@([\w.]+):(\d+)', url).groups()
+      password, host, port = re.match(r'redis://redistogo:([^@]+)@([^:]+):(\d+)', url).groups()
       port = int(port)
-    self.db = redis.StrictRedis(host = host, port = port)
+    self.db = redis.StrictRedis(host = host, port = port, password = password)
     self.manga = {}
     self.mangastream = []
     self.mangahere = []
