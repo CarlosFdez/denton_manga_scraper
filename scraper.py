@@ -55,13 +55,19 @@ class Scraper(object):
 
   def scrape(self):
     results = []
+
+    # Grab manga
     manga_info = mangastream_scrape(self.mangastream)
     manga_info += mangahere_scrape(self.mangahere)
     for (name, chapter, link) in manga_info:
       if self.is_new(name, chapter):
         result = (name, chapter, link)
         results.append(result)
-        self.record(result)
+
+    # Results are recorded afterward.
+    # This is so we consistently get batches of new chaps.
+    for result in results:
+      self.record(result)
     return results
 
   def record(self, result):
