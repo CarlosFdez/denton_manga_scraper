@@ -1,4 +1,4 @@
-import os
+import os, re
 import redis
 import requests
 from bs4 import BeautifulSoup
@@ -47,10 +47,11 @@ def mangahere_scrape(manga_list):
 class Scraper(object):
   def __init__(self):
     if 'REDISTOGO_URL' not in os.environ:
-      host, port = 'localhost', 6379
+      host, port, password = 'localhost', 6379, None
     else:
-      parsed_url = urlparse(os.environ['REDISTOGO_URL'])
-      host, port = parsed_url.host, parsed_url.port
+      url = os.environ['REDISTOGO_URL']
+      password, host, port = re.match(r'redis://redistogo:(\w+)@([\w.]+):(\d+)', url).groups()
+      port = int(port)
     self.db = redis.StrictRedis(host = host, port = port)
     self.manga = {}
     self.mangastream = []
