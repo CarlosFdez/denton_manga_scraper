@@ -1,6 +1,12 @@
+import os
 import redis
 import requests
 from bs4 import BeautifulSoup
+
+try:
+  from urllib.parse import urlparse
+except ImportError:
+  from urlparse import urlparse
 
 # TODO: There should probably be some sort of "driver" system
 # TODO: Don't get a request from mangastream / mangahere if no manga goes there
@@ -40,7 +46,12 @@ def mangahere_scrape(manga_list):
 # TODO: Support more than just mangastream
 class Scraper(object):
   def __init__(self):
-    self.db = redis.StrictRedis(host='localhost', port=6379, db=0)
+    if 'REDISTOGO_URL' not in os.environ:
+      host, port = 'localhost', 6379
+    else:
+      parsed_url = urlparse(os.environ['REDISTOGO_URL'])
+      host, port = parsed_url.host, parsed_url.port
+    self.db = redis.StrictRedis(host = host, port = port)
     self.manga = {}
     self.mangastream = []
     self.mangahere = []
