@@ -58,6 +58,14 @@ class Scraper(object):
     self.mangahere = []
 
   def add_manga(self, name, sources):
+    """Registers a manga to be scraped. 
+    
+    Arguments:
+    name -- The name of the manga to be added. ex: "Soul Eater"
+    sources -- A list of sources for the manga. Currently, mangastream and
+               mangahere are supported: 
+               
+    """
     self.manga[name] = sources
     if 'mangastream' in sources:
       self.mangastream.append(name)
@@ -65,6 +73,7 @@ class Scraper(object):
       self.mangahere.append(name)
 
   def scrape(self):
+    """Scrape for new manga, and returns (name, chapter, link) tuples"""
     results = []
 
     # Grab manga
@@ -87,8 +96,9 @@ class Scraper(object):
     link_key = "manga:%s:latest:link" % name
     self.db.set(chapter_key, chapter)
     self.db.set(link_key, link)
-
+  
   def get_manga(self):
+    """Returns a list of manga info (name, chapter#, link) tuples"""
     results = []
     for name in self.manga.keys():
       link = self.db.get("manga:%s:latest:link" % name)
