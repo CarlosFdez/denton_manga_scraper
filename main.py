@@ -3,7 +3,7 @@ import pyrc
 import pyrc.utils.hooks as hooks
 from scraper import Scraper
 
-CHANNELS = os.environ.get('BOT_CHANNELS', 'testchannel').split(',')
+CHANNELS = os.environ.get('BOT_CHANNELS', '#testchannel').split(',')
 
 class DentonBot(pyrc.Bot):
   def __init__(self, *args, **kwargs):
@@ -29,6 +29,18 @@ class DentonBot(pyrc.Bot):
   @hooks.command
   def help(self, channel):
     self.message(channel, "You're gonna burn, all right.")
+    
+  @hooks.command
+  def registered(self, channel):
+    manga = self.scraper.registered_manga()
+    manga_str = ', '.join(manga)
+    self.message(channel, 'Registered manga include %s' % manga_str)
+    
+  @hooks.command
+  def fetch_manga(self, channel):
+    results = self.scraper.get_manga()
+    for (name, chapter, link) in results:
+      self.message(channel, '%s %i: %s' % (name, chapter, link))
 
   @hooks.interval(15000)
   def scrape(self):
@@ -37,12 +49,6 @@ class DentonBot(pyrc.Bot):
       msg = 'New %s (%i): %s' % (name, chapter, link)
       for channel in CHANNELS:
         self.message(channel, msg)
-
-  @hooks.command
-  def fetch_manga(self, channel):
-    results = self.scraper.get_manga()
-    for (name, chapter, link) in results:
-      self.message(channel, "%s %i: %s" % (name, chapter, link))
 
 if __name__ == '__main__':
   bot = DentonBot('irc.synirc.net',

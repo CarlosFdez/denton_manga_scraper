@@ -97,6 +97,10 @@ class Scraper(object):
     self.db.set(chapter_key, chapter)
     self.db.set(link_key, link)
   
+  def registered_manga(self):
+    """Returns a list of registered manga in alphabetical order"""
+    return sorted(self.manga.keys())
+  
   def get_manga(self):
     """Returns a list of manga info (name, chapter#, link) tuples"""
     results = []
