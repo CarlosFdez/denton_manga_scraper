@@ -9,12 +9,22 @@ class DentonBot(pyrc.Bot):
   def __init__(self, *args, **kwargs):
     super(DentonBot, self).__init__(*args, **kwargs)
     self.scraper = Scraper()
-    self.scraper.add_manga('One Piece', ['mangastream'])
-    self.scraper.add_manga('Bleach', ['mangastream'])
-    self.scraper.add_manga('Naruto', ['mangastream'])
+    
+    # todo: add mangastream to these as well
+    self.scraper.add_manga('One Piece', ['mangahere']) 
+    self.scraper.add_manga('Bleach', ['mangahere'])
+    self.scraper.add_manga('Naruto', ['mangahere'])
+    self.scraper.add_manga('Fairy Tail', ['mangahere'])
+    
     self.scraper.add_manga('Toriko', ['mangahere'])
     self.scraper.add_manga('Gamaran', ['mangahere'])
+    self.scraper.add_manga('Shaman King Flowers', ['mangahere'])
     self.scraper.add_manga('Soul Eater', ['mangahere'])
+    self.scraper.add_manga('The Breaker: New Waves', ['mangahere'])
+    self.scraper.add_manga('The World God Only Knows', ['mangahere'])
+    self.scraper.add_manga('Until Death Do Us Part', ['mangahere'])
+    self.scraper.add_manga('Witch Hunter', ['mangahere'])
+    self.scraper.add_manga('Yotsubato', ['mangahere'])
 
   @hooks.command
   def help(self, channel):
