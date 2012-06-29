@@ -1,3 +1,4 @@
+import socket
 import os
 import pyrc
 import pyrc.utils.hooks as hooks
@@ -9,13 +10,13 @@ class DentonBot(pyrc.Bot):
   def __init__(self, *args, **kwargs):
     super(DentonBot, self).__init__(*args, **kwargs)
     self.scraper = Scraper()
-    
+
     # todo: add mangastream to these as well
-    self.scraper.add_manga('One Piece', ['mangahere']) 
+    self.scraper.add_manga('One Piece', ['mangahere'])
     self.scraper.add_manga('Bleach', ['mangahere'])
     self.scraper.add_manga('Naruto', ['mangahere'])
     self.scraper.add_manga('Fairy Tail', ['mangahere'])
-    
+
     self.scraper.add_manga('Toriko', ['mangahere'])
     self.scraper.add_manga('Gamaran', ['mangahere'])
     self.scraper.add_manga('Shaman King Flowers', ['mangahere'])
@@ -26,16 +27,25 @@ class DentonBot(pyrc.Bot):
     self.scraper.add_manga('Witch Hunter', ['mangahere'])
     self.scraper.add_manga('Yotsubato', ['mangahere'])
 
+    HOST = '0.0.0.0'
+    PORT = os.environ.get('PORT')
+    if PORT:
+      PORT = int(PORT)
+      self.heroku_socket = socket.socket()
+      self.heroku_socket.connect((HOST, PORT))
+    else:
+      self.heroku_socket = None
+
   @hooks.command
   def help(self, channel):
     self.message(channel, "You're gonna burn, all right.")
-    
+
   @hooks.command
   def registered(self, channel):
     manga = self.scraper.registered_manga()
     manga_str = ', '.join(manga)
     self.message(channel, 'Registered manga include %s' % manga_str)
-    
+
   @hooks.command
   def fetch_manga(self, channel):
     results = self.scraper.get_manga()
@@ -49,6 +59,12 @@ class DentonBot(pyrc.Bot):
       msg = 'New %s (%i): %s' % (name, chapter, link)
       for channel in CHANNELS:
         self.message(channel, msg)
+
+  def close(self):
+    super(DentonBot, self).close()
+    if self.heroku_socket:
+      self.heroku_socket.shutdown()
+      self.heroku_socket.close()
 
 if __name__ == '__main__':
   bot = DentonBot('irc.synirc.net',
