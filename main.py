@@ -18,6 +18,7 @@ class DentonBot(pyrc.Bot):
     self.scraper.add_manga('Fairy Tail', ['mangahere'])
 
     self.scraper.add_manga('Toriko', ['mangahere'])
+    self.scraper.add_manga('Cage of Eden', ['mangahere'])
     self.scraper.add_manga('Gamaran', ['mangahere'])
     self.scraper.add_manga('Shaman King Flowers', ['mangahere'])
     self.scraper.add_manga('Soul Eater', ['mangahere'])
