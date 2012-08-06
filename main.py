@@ -26,7 +26,7 @@ class DentonBot(pyrc.Bot):
     self.scraper.add_manga('The World God Only Knows', ['mangahere'])
     self.scraper.add_manga('Until Death Do Us Part', ['mangahere'])
     self.scraper.add_manga('Witch Hunter', ['mangahere'])
-    self.scraper.add_manga('Yotsubato', ['mangahere'])
+    self.scraper.add_manga('Yotsubato!', ['mangahere'])
 
     HOST = '0.0.0.0'
     PORT = os.environ.get('PORT')
