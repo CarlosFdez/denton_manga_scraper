@@ -29,15 +29,6 @@ class DentonBot(pyrc.Bot):
     self.scraper.add_manga('Witch Hunter', ['mangahere'])
     self.scraper.add_manga('Yotsubato!', ['mangahere'])
 
-    HOST = '0.0.0.0'
-    PORT = os.environ.get('PORT')
-    if PORT:
-      PORT = int(PORT)
-      self.heroku_socket = socket.socket()
-      self.heroku_socket.connect((HOST, PORT))
-    else:
-      self.heroku_socket = None
-
   @hooks.command()
   def help(self, channel):
     self.message(channel, "You're gonna burn, all right.")
