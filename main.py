@@ -33,7 +33,7 @@ class DentonBot(pyrc.Bot):
   def help(self, channel):
     self.message(channel, "You're gonna burn, all right.")
 
-  @hooks.command()
+  @hooks.command(r"list|registered")
   def registered(self, channel):
     manga = self.scraper.registered_manga()
     manga_str = ', '.join(manga)
