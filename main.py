@@ -12,6 +12,15 @@ advice = [
   "A bomb's a bad choice for close-range combat"
 ]
 
+aliases = {
+  'op': 'One Piece',
+  'yotsubato': 'Yotsubato!',
+  'ft': 'Fairy Tail',
+  'breaker': 'The Breaker: New Waves',
+  'twgok': 'The World God Only Knows',
+  'uddup': 'Until Death Do Us Part',
+}
+
 class DentonBot(pyrc.Bot):
   def __init__(self, *args, **kwargs):
     super(DentonBot, self).__init__(*args, **kwargs)
@@ -54,6 +63,7 @@ class DentonBot(pyrc.Bot):
   @hooks.command(r"last (?P<manga_name>.*)")
   def last(self, channel, manga_name):
     manga_name = manga_name.strip()
+    manga_name = aliases.get(manga_name, manga_name)
     manga_tuple = self.scraper.get_manga(manga_name)
     if manga_tuple and not manga_tuple[2]:
       self.message(channel, "Sorry, don't have that yet")
@@ -61,8 +71,7 @@ class DentonBot(pyrc.Bot):
       self.message(channel, '%s %i: %s' % manga_tuple)
     else:
       self.message(channel, "I'm not big into books")
-      
-    
+
   @hooks.interval(2 * 60 * 1000)
   def scrape(self):
     results = self.scraper.scrape()
@@ -76,7 +85,7 @@ class DentonBot(pyrc.Bot):
 
 if __name__ == '__main__':
   bot = DentonBot('irc.synirc.net',
-    nick='JCDentona',
+    nick='JCDenton',
     names=['JC', 'JCDenton', 'Denton', 'JCD'],
     realname='JC Denton Bot',
     channels=CHANNELS)
