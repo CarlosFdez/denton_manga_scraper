@@ -101,14 +101,23 @@ class Scraper(object):
     """Returns a list of registered manga in alphabetical order"""
     return sorted(self.manga.keys())
   
-  def get_manga(self):
+  def get_manga(self, name):
+    """"
+    Returns a (name, chapter#, link) tuple for the given chapter,
+    or None if its not registered
+    """
+    if name not in self.manga.keys(): return None
+    chapter = int(self.db.get("manga:%s:latest:chapter" % name))
+    link = self.db.get("manga:%s:latest:link" % name)
+    return (name, chapter, link)
+  
+  def get_all_manga(self):
     """Returns a list of manga info (name, chapter#, link) tuples"""
     results = []
     for name in self.manga.keys():
-      link = self.db.get("manga:%s:latest:link" % name)
-      if not link: continue
-      chapter = int(self.db.get("manga:%s:latest:chapter" % name))
-      results.append( (name, chapter, link) )
+      manga = self.get_manga(name)
+      if not manga[2]: continue
+      results.append(manga)
     return results
 
   def is_new(self, name, scraped_chapter):

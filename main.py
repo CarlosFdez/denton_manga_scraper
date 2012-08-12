@@ -1,10 +1,16 @@
 import socket
 import os
+import random
 import pyrc
 import pyrc.utils.hooks as hooks
 from scraper import Scraper
 
 CHANNELS = os.environ.get('BOT_CHANNELS', '##').split(',')
+
+advice = [
+  "You're gonna burn, all right",
+  "A bomb's a bad choice for close-range combat"
+]
 
 class DentonBot(pyrc.Bot):
   def __init__(self, *args, **kwargs):
@@ -29,9 +35,9 @@ class DentonBot(pyrc.Bot):
     self.scraper.add_manga('Witch Hunter', ['mangahere'])
     self.scraper.add_manga('Yotsubato!', ['mangahere'])
 
-  @hooks.command()
+  @hooks.command(r"help|advice")
   def help(self, channel):
-    self.message(channel, "You're gonna burn, all right.")
+    self.message(channel, random.choice(advice))
 
   @hooks.command(r"list|registered")
   def registered(self, channel):
@@ -45,6 +51,18 @@ class DentonBot(pyrc.Bot):
     for (name, chapter, link) in results:
       self.message(channel, '%s %i: %s' % (name, chapter, link))
 
+  @hooks.command(r"last (?P<manga_name>.*)")
+  def last(self, channel, manga_name):
+    manga_name = manga_name.strip()
+    manga_tuple = self.scraper.get_manga(manga_name)
+    if manga_tuple and not manga_tuple[2]:
+      self.message(channel, "Sorry, don't have that yet")
+    elif manga_tuple:
+      self.message(channel, '%s %i: %s' % manga_tuple)
+    else:
+      self.message(channel, "I'm not big into books")
+      
+    
   @hooks.interval(2 * 60 * 1000)
   def scrape(self):
     results = self.scraper.scrape()
@@ -58,7 +76,7 @@ class DentonBot(pyrc.Bot):
 
 if __name__ == '__main__':
   bot = DentonBot('irc.synirc.net',
-    nick='JCDenton',
+    nick='JCDentona',
     names=['JC', 'JCDenton', 'Denton', 'JCD'],
     realname='JC Denton Bot',
     channels=CHANNELS)
