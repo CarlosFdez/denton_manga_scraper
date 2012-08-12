@@ -55,9 +55,6 @@ class DentonBot(pyrc.Bot):
 
   def close(self):
     super(DentonBot, self).close()
-    if self.heroku_socket:
-      self.heroku_socket.shutdown()
-      self.heroku_socket.close()
 
 if __name__ == '__main__':
   bot = DentonBot('irc.synirc.net',
