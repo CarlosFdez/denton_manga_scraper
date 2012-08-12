@@ -108,8 +108,9 @@ class Scraper(object):
     """
     name = self.match_name(name)
     if not name: return None
-    chapter = int(self.db.get("manga:%s:latest:chapter" % name))
     link = self.db.get("manga:%s:latest:link" % name)
+    if not link: return (name, None, None)
+    chapter = int(self.db.get("manga:%s:latest:chapter" % name))
     return (name, chapter, link)
 
   def match_name(self, name):
@@ -128,7 +129,7 @@ class Scraper(object):
     results = []
     for name in self.manga.keys():
       manga = self.get_manga(name)
-      if not manga[2]: continue
+      if not manga or not manga[2]: continue
       results.append(manga)
     return results
 

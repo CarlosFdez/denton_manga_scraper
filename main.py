@@ -64,7 +64,7 @@ class DentonBot(pyrc.Bot):
     manga_name = aliases.get(manga_name, manga_name)
     manga_tuple = self.scraper.get_manga(manga_name)
     if manga_tuple and not manga_tuple[2]:
-      self.message(channel, "Sorry, don't have that yet")
+      self.message(channel, "Sorry, don't have the latest %s" % manga_tuple[0])
     elif manga_tuple:
       self.message(channel, '%s %i: %s' % manga_tuple)
     else:
