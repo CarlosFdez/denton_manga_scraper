@@ -54,7 +54,7 @@ class DentonBot(pyrc.Bot):
 
   @hooks.command("fetch manga")
   def fetch_manga(self, channel):
-    results = self.scraper.get_manga()
+    results = self.scraper.get_all_manga()
     for (name, chapter, link) in results:
       self.message(channel, '%s %i: %s' % (name, chapter, link))
 
