@@ -106,10 +106,22 @@ class Scraper(object):
     Returns a (name, chapter#, link) tuple for the given chapter,
     or None if its not registered
     """
-    if name not in self.manga.keys(): return None
+    name = self.match_name(name)
+    if not name: return None
     chapter = int(self.db.get("manga:%s:latest:chapter" % name))
     link = self.db.get("manga:%s:latest:link" % name)
     return (name, chapter, link)
+
+  def match_name(self, name):
+    """
+    Returns a manga's name if `name` is a case-insensitive substring of it.
+    If `name` is not a substring of any manga, returns None.
+    """
+    name = name.lower()
+    for manga_name in self.manga.keys():
+      if name in manga_name.lower():
+        return manga_name
+    return None
   
   def get_all_manga(self):
     """Returns a list of manga info (name, chapter#, link) tuples"""

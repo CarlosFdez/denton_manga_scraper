@@ -14,9 +14,7 @@ advice = [
 
 aliases = {
   'op': 'One Piece',
-  'yotsubato': 'Yotsubato!',
   'ft': 'Fairy Tail',
-  'breaker': 'The Breaker: New Waves',
   'twgok': 'The World God Only Knows',
   'uddup': 'Until Death Do Us Part',
 }
