@@ -61,6 +61,5 @@ if __name__ == '__main__':
     nick='JCDenton',
     names=['JC', 'JCDenton', 'Denton', 'JCD'],
     realname='JC Denton Bot',
-    password="iamskynet",
     channels=CHANNELS)
   bot.connect()
